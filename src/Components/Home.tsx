@@ -1,17 +1,14 @@
 import React from "react";
+import Content from "./Content";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 
 export default function Home() {
   return (
     <div className="flex h-screen overflow-hidden">
-      {/* Sidebar */}
       <Sidebar />
 
-      {/* Right side */}
-      <div className="min-h-full w-4/5 bg-slate-200">
-        <Navbar />
-        {/* Content */}
+      <Content>
         <div className="flex min-h-full flex-col space-y-4 px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-3 gap-4">
             <div className="mx-2 h-28 cursor-pointer rounded-xl bg-white hover:bg-slate-100">
@@ -50,7 +47,7 @@ export default function Home() {
           </div>
           <p>My Tasks</p>
         </div>
-      </div>
+      </Content>
     </div>
   );
 }

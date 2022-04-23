@@ -4,8 +4,8 @@ import { ActiveLink } from "raviger";
 
 export default function Sidebar() {
   return (
-    <div className="h-screen w-1/5 bg-white">
-      <div className="h-18 border-b-2 py-6">
+    <div className="h-screen w-1/5 border-r-2 bg-white">
+      <div className="h-20 border-b-2 py-6">
         <h1 className="text-center text-xl font-bold text-slate-900">
           Kanban Tasks
         </h1>

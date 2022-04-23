@@ -1,21 +1,25 @@
-import React from "react";
+import { Icon } from "@iconify/react";
+import React, { useContext } from "react";
+import { userContext } from "../utils/formUtils";
 
 export default function Navbar() {
+  const currentUser = useContext(userContext);
+  console.log(currentUser.name);
+
   return (
-    <div className="flex justify-between px-4 py-2">
-      {/* Searchbar */}
+    <div className="flex h-20 justify-between border-b-2 px-4 py-5">
       <form
-        className="flex justify-center"
+        className="ml-6 flex justify-center"
         onSubmit={(e) => {
           e.preventDefault();
           //   setSearchQP({ search: state.searchString });
         }}
       >
         <input
-          className="mr-4 w-full rounded-2xl bg-slate-100 p-3 focus:outline-none"
+          className="mr-4 w-full rounded bg-slate-200 p-3 focus:outline-none"
           type="text"
           name="search"
-          placeholder="Enter string to search"
+          placeholder="🔍   Search for anything"
           //   value={state.searchString}
           //   onChange={(e) => {
           //     dispatch({
@@ -25,25 +29,24 @@ export default function Navbar() {
           //   }}
         />
         <input
-          className="group relative my-2 flex justify-center rounded-lg border border-transparent bg-blue-500 py-2 px-4 text-sm font-extrabold text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="group relative flex justify-center rounded border-2 border-slate-600 py-2 px-4 text-sm text-gray-500 hover:bg-slate-200 focus:outline-none"
           type="submit"
           value="Search"
         />
       </form>
       <div className="flex gap-5">
-        {/* User's Name */}
         <div className="flex items-center gap-1">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-black text-white ">
-            NG
-          </div>
-          <p>Naman Gogia</p>
+          <p>{currentUser.username}</p>
         </div>
-        {/* Logout Button */}
-        <input
-          className="group relative my-2 flex justify-center rounded-lg border border-transparent bg-blue-500 py-2 px-4 text-sm font-extrabold text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          type="button"
-          value="Logout"
-        />
+        <div
+          onClick={(_) => {
+            localStorage.removeItem("token");
+            window.location.reload();
+          }}
+          className="flex cursor-pointer items-center"
+        >
+          <Icon icon="uiw:logout" className="text-2xl" />
+        </div>
       </div>
     </div>
   );
