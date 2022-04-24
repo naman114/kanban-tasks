@@ -13,8 +13,6 @@ export type BoardGet = {
   modified_date: string;
 };
 
-export type BoardUpdate = Overwrite<BoardCreate, "id">;
-
 export const validateBoard = (board: BoardCreate) => {
   const errors: Errors<BoardCreate> = {};
   if (board.title.length < 1) {
