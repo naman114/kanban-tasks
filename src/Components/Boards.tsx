@@ -5,10 +5,11 @@ import { reducer } from "../actions/boardActions";
 import Loading from "../common/Loading";
 import Modal from "../common/Modal";
 import Paginate from "../common/Paginate";
-import { BoardGet } from "../types/boardTypes";
+import { BoardGet, BoardCreate } from "../types/boardTypes";
 import { Pagination } from "../types/common";
-import { listBoards } from "../utils/apiUtils";
+import { listBoards, patchBoard } from "../utils/apiUtils";
 import { showNotification } from "../utils/notifUtils";
+import BoardListItem from "./BoardListItem";
 import Content from "./Content";
 import CreateBoard from "./CreateBoard";
 import Sidebar from "./Sidebar";
@@ -65,6 +66,18 @@ export default function Boards() {
     fetchBoards();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const handleBoardUpdate = (id: number, data: BoardCreate) => {
+    const { title, description } = data;
+    dispatch({ type: "update_board", id, field: "title", value: title });
+    dispatch({
+      type: "update_board",
+      id,
+      field: "description",
+      value: description,
+    });
+    patchBoard(id, { title, description });
+  };
+
   return loading ? (
     <Loading />
   ) : (
@@ -95,17 +108,11 @@ export default function Boards() {
           <div className="grid grid-cols-3 gap-4">
             {state.map((board) => {
               return (
-                <div key={board.id} className="rounded-xl bg-stone-300">
-                  <div className="mx-6 mt-7 mb-16 flex flex-col gap-4">
-                    <div className="flex items-center justify-between">
-                      <p className="text-lg font-medium text-slate-900">
-                        {board.title}
-                      </p>
-                      <Icon icon="mi:options-horizontal" className="text-xl" />
-                    </div>
-                    <p>{board.description}</p>
-                  </div>
-                </div>
+                <BoardListItem
+                  id={board.id}
+                  board={board}
+                  handleBoardUpdateCB={handleBoardUpdate}
+                />
               );
             })}
           </div>

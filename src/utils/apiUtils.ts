@@ -1,3 +1,4 @@
+import { BoardCreate } from "../types/boardTypes";
 import { PaginationParams } from "../types/common";
 import {
   createFormField,
@@ -122,4 +123,8 @@ export const createBoard = (board: any) => {
 
 export const listBoards = (pageParams: PaginationParams) => {
   return request("/boards/", "GET", pageParams);
+};
+
+export const patchBoard = (boardId: number, data: BoardCreate) => {
+  return request(`/boards/${boardId}/`, "PATCH", data);
 };

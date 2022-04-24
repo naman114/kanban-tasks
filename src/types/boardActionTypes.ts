@@ -5,4 +5,11 @@ export type PopulateBoards = {
   boards: BoardGet[];
 };
 
-export type BoardAction = PopulateBoards;
+export type UpdateBoard = {
+  type: "update_board";
+  id: number;
+  field: string;
+  value: string;
+};
+
+export type BoardAction = PopulateBoards | UpdateBoard;

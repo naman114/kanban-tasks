@@ -1,4 +1,4 @@
-import { Errors } from "./common";
+import { Errors, Overwrite } from "./common";
 
 export type BoardCreate = {
   title: string;
@@ -12,6 +12,8 @@ export type BoardGet = {
   created_date: string;
   modified_date: string;
 };
+
+export type BoardUpdate = Overwrite<BoardCreate, "id">;
 
 export const validateBoard = (board: BoardCreate) => {
   const errors: Errors<BoardCreate> = {};

@@ -6,5 +6,13 @@ export const reducer = (state: BoardGet[], action: BoardAction) => {
     case "populate_boards": {
       return action.boards;
     }
+    case "update_board": {
+      return state.map((board) => {
+        if (board.id === action.id) {
+          return { ...board, [action.field]: action.value };
+        }
+        return board;
+      });
+    }
   }
 };
