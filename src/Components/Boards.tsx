@@ -127,7 +127,6 @@ export default function Boards() {
             {state.map((board) => {
               return (
                 <BoardListItem
-                  id={board.id}
                   board={board}
                   setBoardToUpdateCB={(boardToUpdate: BoardUpdate) =>
                     setBoardToUpdate(boardToUpdate)

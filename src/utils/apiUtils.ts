@@ -1,4 +1,4 @@
-import { BoardCreate } from "../types/boardTypes";
+import { BoardCreate, TaskCreate } from "../types/boardTypes";
 import { PaginationParams } from "../types/common";
 import {
   createFormField,
@@ -7,6 +7,7 @@ import {
   updateForm,
   updateFormField,
 } from "../types/formTypes";
+import { StatusCreate } from "../types/statusTypes";
 import { CreateUser } from "../types/userTypes";
 import { showNotification } from "./notifUtils";
 
@@ -125,10 +126,30 @@ export const listBoards = (pageParams: PaginationParams) => {
   return request("/boards/", "GET", pageParams);
 };
 
+export const getBoard = (boardId: number) => {
+  return request(`/boards/${boardId}/`, "GET");
+};
+
 export const patchBoard = (boardId: number, data: BoardCreate) => {
   return request(`/boards/${boardId}/`, "PATCH", data);
 };
 
 export const deleteBoard = (boardId: number) => {
   return request(`/boards/${boardId}/`, "DELETE");
+};
+
+export const listBoardTasks = (boardId: number) => {
+  return request(`/boards/${boardId}/tasks/`, "GET");
+};
+
+export const listStatus = () => {
+  return request("/status/", "GET");
+};
+
+export const createStatus = (status: StatusCreate) => {
+  return request("/status/", "POST", status);
+};
+
+export const createTask = (boardId: number, task: TaskCreate) => {
+  return request(`/boards/${boardId}/tasks/`, "POST", task);
 };

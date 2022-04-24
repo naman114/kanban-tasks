@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Icon } from "@iconify/react";
 import { BoardGet, BoardUpdate } from "../types/boardTypes";
+import { navigate } from "raviger";
 
 export default function BoardListItem(props: {
-  id: number;
   board: BoardGet;
   setBoardToUpdateCB: (boardToUpdate: BoardUpdate) => void;
   openUpdateModalCB: () => void;
@@ -17,20 +17,24 @@ export default function BoardListItem(props: {
 
   const handleEdit = () => {
     props.setBoardToUpdateCB({
-      id: props.id,
+      id: props.board.id,
       title: props.board.title,
       description: props.board.description,
     });
     props.openUpdateModalCB();
   };
 
-  const handleDelete = () => {};
-
   return (
-    <div key={props.board.id} className="rounded-xl bg-stone-300">
+    <div
+      key={props.board.id}
+      className="rounded-xl bg-stone-200 hover:bg-stone-300"
+    >
       <div className="mx-6 mt-7 mb-16 flex flex-col gap-4">
         <div className="relative flex items-center justify-between ">
-          <p className="text-lg font-medium text-slate-900">
+          <p
+            onClick={() => navigate(`/boards/${props.board.id}`)}
+            className="cursor-pointer text-lg font-medium text-slate-900"
+          >
             {props.board.title}
           </p>
           {isActive ? (

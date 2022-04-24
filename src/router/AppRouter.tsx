@@ -7,6 +7,7 @@ import Loading from "../common/Loading";
 import Register from "../Components/Register";
 import Home from "../Components/Home";
 import Boards from "../Components/Boards";
+import BoardDetail from "../Components/BoardDetail";
 
 const Login = lazy(() => import("../Components/Login"));
 const About = lazy(() => import("../Components/About"));
@@ -22,15 +23,16 @@ export default function AppRouter() {
       currentUser.status === "NOT_AUTHENTICATED" ? <Login /> : <Home />,
     "/login": () => <Login />,
     "/register": () => <Register />,
-    "/boards": () => <Boards />,
-    "/about": () => <About />,
-    "/forms": () => <FormList />,
-    "/forms/:id": ({ id }: { id: string }) =>
+    "/boards": () =>
+      currentUser.status === "NOT_AUTHENTICATED" ? <Login /> : <Boards />,
+    "/boards/:id": ({ id }: { id: string }) =>
       currentUser.status === "NOT_AUTHENTICATED" ? (
         <Login />
       ) : (
-        <UserForm formId={Number(id)} />
+        <BoardDetail boardId={Number(id)} />
       ),
+    "/about": () => <About />,
+    "/forms": () => <FormList />,
     "/preview/:id": ({ id }: { id: string }) =>
       currentUser.status === "NOT_AUTHENTICATED" ? (
         <Login />
