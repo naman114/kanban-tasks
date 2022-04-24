@@ -128,3 +128,7 @@ export const listBoards = (pageParams: PaginationParams) => {
 export const patchBoard = (boardId: number, data: BoardCreate) => {
   return request(`/boards/${boardId}/`, "PATCH", data);
 };
+
+export const deleteBoard = (boardId: number) => {
+  return request(`/boards/${boardId}/`, "DELETE");
+};

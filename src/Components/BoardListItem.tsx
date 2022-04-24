@@ -7,6 +7,7 @@ export default function BoardListItem(props: {
   board: BoardGet;
   setBoardToUpdateCB: (boardToUpdate: BoardUpdate) => void;
   openUpdateModalCB: () => void;
+  handleDeleteBoardCB: (id: number) => void;
 }) {
   const [isActive, setIsActive] = useState(false);
 
@@ -44,7 +45,11 @@ export default function BoardListItem(props: {
                     text: "Edit",
                     handler: () => handleEdit(),
                   },
-                  { icon: "ant-design:delete-outlined", text: "Archive" },
+                  {
+                    icon: "ant-design:delete-outlined",
+                    text: "Archive",
+                    handler: () => props.handleDeleteBoardCB(props.board.id),
+                  },
                 ].map((item, idx) => {
                   return (
                     <li key={idx} className="hover:bg-stone-500">

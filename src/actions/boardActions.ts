@@ -14,5 +14,8 @@ export const reducer = (state: BoardGet[], action: BoardAction) => {
         return board;
       });
     }
+    case "delete_board": {
+      return state.filter((board) => board.id !== action.id);
+    }
   }
 };

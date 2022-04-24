@@ -12,4 +12,9 @@ export type UpdateBoard = {
   value: string;
 };
 
-export type BoardAction = PopulateBoards | UpdateBoard;
+export type DeleteBoard = {
+  type: "delete_board";
+  id: number;
+};
+
+export type BoardAction = PopulateBoards | UpdateBoard | DeleteBoard;

@@ -7,7 +7,12 @@ import Modal from "../common/Modal";
 import Paginate from "../common/Paginate";
 import { BoardGet, BoardCreate, BoardUpdate } from "../types/boardTypes";
 import { Pagination } from "../types/common";
-import { listBoards, patchBoard } from "../utils/apiUtils";
+import {
+  deleteBoard,
+  deleteForm,
+  listBoards,
+  patchBoard,
+} from "../utils/apiUtils";
 import { showNotification } from "../utils/notifUtils";
 import BoardListItem from "./BoardListItem";
 import Content from "./Content";
@@ -84,6 +89,13 @@ export default function Boards() {
     });
   };
 
+  const handleBoardDelete = async (id: number) => {
+    dispatch({ type: "delete_board", id });
+    setCount(count - 1);
+    await deleteBoard(id);
+    showNotification("success", "Form deleted successfully");
+  };
+
   return loading ? (
     <Loading />
   ) : (
@@ -121,6 +133,7 @@ export default function Boards() {
                     setBoardToUpdate(boardToUpdate)
                   }
                   openUpdateModalCB={() => setIsUpdateModalOpen(true)}
+                  handleDeleteBoardCB={handleBoardDelete}
                 />
               );
             })}
