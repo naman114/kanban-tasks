@@ -1,63 +1,125 @@
-import React from "react";
+import { Icon } from "@iconify/react";
+import { useQueryParams } from "raviger";
+import React, { useEffect, useReducer, useState } from "react";
+import { reducer } from "../actions/boardActions";
+import Loading from "../common/Loading";
+import Modal from "../common/Modal";
+import Paginate from "../common/Paginate";
+import { BoardGet } from "../types/boardTypes";
+import { Pagination } from "../types/common";
+import { listBoards } from "../utils/apiUtils";
+import { showNotification } from "../utils/notifUtils";
 import Content from "./Content";
-import Navbar from "./Navbar";
+import CreateBoard from "./CreateBoard";
 import Sidebar from "./Sidebar";
 
+const initialState = (): BoardGet[] => {
+  return [];
+};
+
 export default function Boards() {
-  return (
+  const [state, dispatch] = useReducer(reducer, null, () => initialState());
+  const [newBoard, setNewBoard] = useState(false);
+  const [{ page }, setPageQP] = useQueryParams();
+  const [pageNum, setPageNum] = useState<number>(page ?? 1);
+  const [count, setCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setPageQP({ page: pageNum });
+  }, [pageNum]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    fetchBoards();
+  }, [page]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const fetchBoards = async () => {
+    try {
+      setLoading(true);
+      const data: Pagination<BoardGet> = await listBoards({
+        offset: (pageNum - 1) * 6,
+        limit: 6,
+      });
+      console.log(data);
+      setLoading(false);
+      setCount(data.count);
+      const boards: BoardGet[] = data.results.map((result) => {
+        const { id, title, description, created_date, modified_date } = result;
+        const board: BoardGet = {
+          id,
+          title,
+          description,
+          created_date,
+          modified_date,
+        };
+        return board;
+      });
+      dispatch({ type: "populate_boards", boards });
+    } catch (error) {
+      console.error(error);
+      showNotification("danger", "Error occured in fetching boards");
+    }
+  };
+
+  useEffect(() => {
+    fetchBoards();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return loading ? (
+    <Loading />
+  ) : (
     <div className="flex h-screen overflow-hidden">
-      {/* Sidebar */}
       <Sidebar />
       <Content>
-        {/* Content */}
-        <h1 className="text-2xl font-bold">My Boards</h1>
-        <div className="mx-10 my-6 flex justify-between">
-          <div className="h-8 w-16 rounded-lg bg-black px-2 py-1 text-center text-white">
-            <a href="/patient/create/">Filter</a>
+        <div className="m-10">
+          <h1 className="text-5xl font-medium text-slate-900">My Boards</h1>
+          <div className="my-6 flex justify-between">
+            <button className="group relative flex items-center justify-center gap-2 rounded border-2 border-zinc-500 py-2 px-4 text-sm text-gray-500 hover:bg-slate-200 focus:outline-none">
+              <p>Filter</p>
+              <Icon icon="akar-icons:chevron-down" />
+            </button>
+            <button
+              onClick={(_) => {
+                setNewBoard(true);
+              }}
+              className="group relative flex items-center justify-center gap-2 rounded border-2 border-zinc-500 py-2 px-4 text-sm text-gray-500 hover:bg-slate-200 focus:outline-none"
+            >
+              <Icon
+                icon="ant-design:plus-square-outlined"
+                className="text-xl"
+              />
+              <p>New Board</p>
+            </button>
           </div>
-          <div className="h-8 w-16 rounded-lg bg-black px-2 py-1 text-center text-white">
-            <a href="/patient/create/">New</a>
-          </div>
-        </div>
 
-        <div className="flex min-h-full flex-col space-y-4 px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-3 gap-4">
-            <div className="mx-2 h-28 cursor-pointer rounded-xl bg-white hover:bg-slate-100">
-              <a href="/patient/{{ patient.id }}/">
-                <div className="mx-8 my-3 flex">
-                  <div className="flex flex-col">
-                    <p>Incomplete Tasks</p>
-                    <p className="text-gray-400">0</p>
-                    <p className="text-gray-400">Task Count</p>
+            {state.map((board) => {
+              return (
+                <div key={board.id} className="rounded-xl bg-stone-300">
+                  <div className="mx-6 mt-7 mb-16 flex flex-col gap-4">
+                    <div className="flex items-center justify-between">
+                      <p className="text-lg font-medium text-slate-900">
+                        {board.title}
+                      </p>
+                      <Icon icon="mi:options-horizontal" className="text-xl" />
+                    </div>
+                    <p>{board.description}</p>
                   </div>
                 </div>
-              </a>
-            </div>
-            <div className="mx-2 h-28 cursor-pointer rounded-xl bg-white hover:bg-slate-100">
-              <a href="/patient/{{ patient.id }}/">
-                <div className="mx-8 my-3 flex">
-                  <div className="flex flex-col">
-                    <p>Completed Tasks</p>
-                    <p className="text-gray-400">0</p>
-                    <p className="text-gray-400">Task Count</p>
-                  </div>
-                </div>
-              </a>
-            </div>
-            <div className="mx-2 h-28 cursor-pointer rounded-xl bg-white hover:bg-slate-100">
-              <a href="/patient/{{ patient.id }}/">
-                <div className="mx-8 my-3 flex">
-                  <div className="flex flex-col">
-                    <p>Total Tasks</p>
-                    <p className="text-gray-400">0</p>
-                    <p className="text-gray-400">Task Count</p>
-                  </div>
-                </div>
-              </a>
-            </div>
+              );
+            })}
           </div>
+          <Paginate
+            itemsPerPage={6}
+            count={count}
+            pageNum={pageNum}
+            setPageCB={setPageNum}
+          />
         </div>
       </Content>
+      <Modal open={newBoard} closeCB={() => setNewBoard(false)}>
+        <CreateBoard />
+      </Modal>
     </div>
   );
 }

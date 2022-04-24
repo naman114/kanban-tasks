@@ -167,7 +167,12 @@ export default function FormList() {
           </ul>
         </div>
       )}
-      <Paginate count={count} pageNum={pageNum} setPageCB={setPageNum} />
+      <Paginate
+        itemsPerPage={5}
+        count={count}
+        pageNum={pageNum}
+        setPageCB={setPageNum}
+      />
       <div className="flex space-x-2">
         <button
           disabled={!currentUser || !currentUser?.username}

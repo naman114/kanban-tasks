@@ -1,9 +1,10 @@
 import { navigate } from "raviger";
 import React, { useContext, useEffect, useState } from "react";
 import { register } from "../utils/apiUtils";
-import { CreateUser, Errors, validateUser } from "../types/userTypes";
+import { CreateUser, validateUser } from "../types/userTypes";
 import { login } from "../utils/apiUtils";
 import { userContext } from "../utils/formUtils";
+import { Errors } from "../types/common";
 
 export default function Register() {
   const [username, setUsername] = useState("");

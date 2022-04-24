@@ -1,4 +1,4 @@
-import { Overwrite } from "./common";
+import { Errors, Overwrite } from "./common";
 
 export type FormData = {
   id: number;
@@ -37,8 +37,6 @@ export type updateFormField = Partial<createFormField>;
 export type receivedFormField = createFormField & { id: number };
 
 export type ReceivedForm = Overwrite<Form, { id: number }>;
-
-export type Errors<T> = Partial<Record<keyof T, string>>;
 
 export const validateForm = (form: Form) => {
   const errors: Errors<Form> = {};

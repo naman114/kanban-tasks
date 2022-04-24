@@ -8,7 +8,6 @@ import {
   textFieldTypes,
   formFieldKind,
   validateField,
-  Errors,
   createFormField,
   receivedFormField,
   receivedForm,
@@ -16,7 +15,7 @@ import {
 import LabelledDropdownInput from "./LabelledDropdownInput";
 import LabelledTextAreaInput from "./LabelledTextAreaInput";
 import { reducer } from "../actions/formActions";
-import { Pagination } from "../types/common";
+import { Errors, Pagination } from "../types/common";
 import {
   createField,
   deleteFormField,

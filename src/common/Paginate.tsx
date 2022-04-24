@@ -11,9 +11,10 @@ const buttonClassNames = {
 export default function Pagination(props: {
   count: number;
   pageNum: number;
+  itemsPerPage: number;
   setPageCB: (pageNum: number) => void;
 }) {
-  // console.log(typeof props.pageNum);
+  console.log(props.pageNum, props.itemsPerPage);
   return (
     <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
       <div className="flex flex-1 justify-between sm:hidden">
@@ -25,7 +26,7 @@ export default function Pagination(props: {
           Previous
         </button>
         <button
-          disabled={props.pageNum * 5 >= props.count}
+          disabled={props.pageNum * props.itemsPerPage >= props.count}
           onClick={() => props.setPageCB(Number(props.pageNum) + 1)}
           className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
         >
@@ -37,11 +38,16 @@ export default function Pagination(props: {
           <p className="text-sm text-gray-700">
             Showing{" "}
             <span className="font-medium">
-              {props.count > 0 ? 1 + 5 * (props.pageNum - 1) : 0}
+              {props.count > 0
+                ? 1 + props.itemsPerPage * (Number(props.pageNum) - 1)
+                : 0}
             </span>{" "}
             to{" "}
             <span className="font-medium">
-              {Math.min(props.count, 5 * props.pageNum)}
+              {Math.min(
+                props.count,
+                props.itemsPerPage * Number(props.pageNum)
+              )}
             </span>{" "}
             of <span className="font-medium">{props.count}</span> results
           </p>
@@ -61,7 +67,7 @@ export default function Pagination(props: {
             </button>
             {/* Current: "z-10 bg-indigo-50 border-indigo-500 text-indigo-600", Default: "bg-white border-gray-300 text-gray-500 hover:bg-gray-50" */}
             {Array.from(
-              { length: Math.ceil(props.count / 5) },
+              { length: Math.ceil(props.count / props.itemsPerPage) },
               (_, i) => i + 1
             ).map((elementInArray, index) => {
               return (
@@ -82,7 +88,7 @@ export default function Pagination(props: {
             })}
             <button
               className="relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50"
-              disabled={props.pageNum * 5 >= props.count}
+              disabled={props.pageNum * props.itemsPerPage >= props.count}
               onClick={() => props.setPageCB(Number(props.pageNum) + 1)}
             >
               <span className="sr-only">Next</span>

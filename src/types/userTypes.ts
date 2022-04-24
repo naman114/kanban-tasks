@@ -1,3 +1,5 @@
+import { Errors } from "./common";
+
 export type User = {
   username: string;
   name: string;
@@ -11,8 +13,6 @@ export type CreateUser = {
   password1: string;
   password2: string;
 };
-
-export type Errors<T> = Partial<Record<keyof T, string>>;
 
 export const validateUser = (user: CreateUser) => {
   const errors: Errors<CreateUser> = {};

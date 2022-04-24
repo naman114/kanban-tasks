@@ -115,3 +115,11 @@ export const patchForm = (formId: number, data: updateForm) => {
 export const createSubmission = (formId: number, data: FormSubmission) => {
   return request(`/forms/${formId}/submission/`, "POST", data);
 };
+
+export const createBoard = (board: any) => {
+  return request("/boards/", "POST", board);
+};
+
+export const listBoards = (pageParams: PaginationParams) => {
+  return request("/boards/", "GET", pageParams);
+};
