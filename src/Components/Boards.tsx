@@ -5,7 +5,7 @@ import { reducer } from "../actions/boardActions";
 import Loading from "../common/Loading";
 import Modal from "../common/Modal";
 import Paginate from "../common/Paginate";
-import { BoardGet, BoardCreate } from "../types/boardTypes";
+import { BoardGet, BoardCreate, BoardUpdate } from "../types/boardTypes";
 import { Pagination } from "../types/common";
 import { listBoards, patchBoard } from "../utils/apiUtils";
 import { showNotification } from "../utils/notifUtils";
@@ -13,6 +13,7 @@ import BoardListItem from "./BoardListItem";
 import Content from "./Content";
 import CreateBoard from "./CreateBoard";
 import Sidebar from "./Sidebar";
+import UpdateBoard from "./UpdateBoard";
 
 const initialState = (): BoardGet[] => {
   return [];
@@ -25,6 +26,12 @@ export default function Boards() {
   const [pageNum, setPageNum] = useState<number>(page ?? 1);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [boardToUpdate, setBoardToUpdate] = useState<BoardUpdate>({
+    id: -1,
+    title: "",
+    description: "",
+  });
 
   useEffect(() => {
     setPageQP({ page: pageNum });
@@ -75,7 +82,6 @@ export default function Boards() {
       field: "description",
       value: description,
     });
-    patchBoard(id, { title, description });
   };
 
   return loading ? (
@@ -111,7 +117,10 @@ export default function Boards() {
                 <BoardListItem
                   id={board.id}
                   board={board}
-                  handleBoardUpdateCB={handleBoardUpdate}
+                  setBoardToUpdateCB={(boardToUpdate: BoardUpdate) =>
+                    setBoardToUpdate(boardToUpdate)
+                  }
+                  openUpdateModalCB={() => setIsUpdateModalOpen(true)}
                 />
               );
             })}
@@ -125,7 +134,17 @@ export default function Boards() {
         </div>
       </Content>
       <Modal open={newBoard} closeCB={() => setNewBoard(false)}>
-        <CreateBoard />
+        <CreateBoard closeModalCB={() => setIsUpdateModalOpen(false)} />
+      </Modal>
+      <Modal
+        open={isUpdateModalOpen}
+        closeCB={() => setIsUpdateModalOpen(false)}
+      >
+        <UpdateBoard
+          boardToUpdate={boardToUpdate}
+          handleBoardUpdateCB={handleBoardUpdate}
+          closeModalCB={() => setIsUpdateModalOpen(false)}
+        />
       </Modal>
     </div>
   );

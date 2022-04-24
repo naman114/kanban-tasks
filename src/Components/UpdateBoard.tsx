@@ -1,14 +1,18 @@
 import { navigate } from "raviger";
 import React, { useState } from "react";
-import { BoardCreate, validateBoard } from "../types/boardTypes";
+import { BoardCreate, BoardUpdate, validateBoard } from "../types/boardTypes";
 import { Errors } from "../types/common";
-import { createBoard } from "../utils/apiUtils";
+import { patchBoard } from "../utils/apiUtils";
 import { showNotification } from "../utils/notifUtils";
 
-export default function CreateBoard(props: { closeModalCB: () => void }) {
+export default function UpdateBoard(props: {
+  boardToUpdate: BoardUpdate;
+  handleBoardUpdateCB: (id: number, data: BoardCreate) => void;
+  closeModalCB: () => void;
+}) {
   const [board, setBoard] = useState<BoardCreate>({
-    title: "",
-    description: "",
+    title: props.boardToUpdate.title,
+    description: props.boardToUpdate.description,
   });
 
   const [errors, setErrors] = useState<Errors<BoardCreate>>({});
@@ -21,9 +25,13 @@ export default function CreateBoard(props: { closeModalCB: () => void }) {
 
     if (Object.keys(validationErrors).length === 0) {
       try {
-        const data = await createBoard(board);
-        navigate(`/boards/${data.id}/`);
-        showNotification("success", "Board created successfully");
+        const data: BoardCreate = {
+          title: board.title,
+          description: board.description,
+        };
+        props.handleBoardUpdateCB(props.boardToUpdate.id, data);
+        await patchBoard(props.boardToUpdate.id, board);
+        showNotification("success", "Board updated successfully");
         props.closeModalCB();
       } catch (error) {
         console.log(error);
@@ -34,7 +42,7 @@ export default function CreateBoard(props: { closeModalCB: () => void }) {
 
   return (
     <div className="w-full max-w-lg divide-y divide-gray-200">
-      <h1 className="text2xl my-2 text-gray-700">Create Board</h1>
+      <h1 className="text2xl my-2 text-gray-700">Update Board</h1>
       <form onSubmit={handleSubmit} className="py-4">
         <div className="mb-4">
           <label

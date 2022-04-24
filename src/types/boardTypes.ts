@@ -13,6 +13,8 @@ export type BoardGet = {
   modified_date: string;
 };
 
+export type BoardUpdate = BoardCreate & { id: number };
+
 export const validateBoard = (board: BoardCreate) => {
   const errors: Errors<BoardCreate> = {};
   if (board.title.length < 1) {

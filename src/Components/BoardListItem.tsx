@@ -1,23 +1,28 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Icon } from "@iconify/react";
-import { BoardGet, BoardCreate } from "../types/boardTypes";
+import { BoardGet, BoardUpdate } from "../types/boardTypes";
 
 export default function BoardListItem(props: {
   id: number;
   board: BoardGet;
-  handleBoardUpdateCB: (id: number, data: BoardCreate) => void;
+  setBoardToUpdateCB: (boardToUpdate: BoardUpdate) => void;
+  openUpdateModalCB: () => void;
 }) {
   const [isActive, setIsActive] = useState(false);
-  const [title, setTitle] = useState(props.board.title);
-  const [description, setDescription] = useState(props.board.description);
 
   const toggle = () => {
     isActive ? setIsActive(false) : setIsActive(true);
   };
 
   const handleEdit = () => {
-    props.handleBoardUpdateCB(props.id, { title, description });
+    props.setBoardToUpdateCB({
+      id: props.id,
+      title: props.board.title,
+      description: props.board.description,
+    });
+    props.openUpdateModalCB();
   };
+
   const handleDelete = () => {};
 
   return (
