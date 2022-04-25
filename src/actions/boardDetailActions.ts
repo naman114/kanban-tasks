@@ -67,7 +67,7 @@ export const reducer = (
       return {
         ...state,
         tasksGroups: state.tasksGroups
-          .filter((group) => {
+          .map((group) => {
             if (group.status === action.oldStatusId) {
               return {
                 ...group,

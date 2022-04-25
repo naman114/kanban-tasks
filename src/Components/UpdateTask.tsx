@@ -13,7 +13,6 @@ import { showNotification } from "../utils/notifUtils";
 
 export default function UpdateTask(props: {
   boardId: number;
-  status: string;
   taskToUpdate: TaskUpdate;
   handleTaskUpdateCB: (oldStatusId: number, task: TaskGet) => void;
   closeModalCB: () => void;
@@ -25,7 +24,7 @@ export default function UpdateTask(props: {
     title: props.taskToUpdate.title,
     description: props.taskToUpdate.description,
   });
-  const [statusString, setStatusString] = useState(props.status);
+  const [statusString, setStatusString] = useState("");
   const [statusList, setStatusList] = useState<
     Array<{ id: number; title: string }>
   >([]);
@@ -42,6 +41,11 @@ export default function UpdateTask(props: {
     });
     setLoading(false);
     setStatusList(statusListToSet);
+    setStatusString(
+      statusListToSet.filter(
+        (status) => props.taskToUpdate.oldStatusId === status.id
+      )[0].title
+    );
   };
 
   useEffect(() => {
@@ -73,7 +77,7 @@ export default function UpdateTask(props: {
           props.taskToUpdate.id,
           payload
         );
-        props.handleTaskUpdateCB(props.taskToUpdate.id, data);
+        props.handleTaskUpdateCB(props.taskToUpdate.oldStatusId, data);
         showNotification("success", "Task updated successfully");
         props.closeModalCB();
       } catch (error) {

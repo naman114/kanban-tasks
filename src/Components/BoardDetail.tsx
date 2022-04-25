@@ -152,7 +152,16 @@ export default function BoardDetail(props: { boardId: number }) {
     showNotification("success", "Status deleted successfully");
   };
 
-  const handleUpdateTask = (oldStatusId: number, task: TaskGet) => {};
+  const handleUpdateTask = (oldStatusId: number, task: TaskGet) => {
+    console.log({ task });
+    dispatch({
+      type: "update_task",
+      oldStatusId,
+      newStatusId: task.status_object.id,
+      taskId: task.id,
+      updatedTask: task,
+    });
+  };
 
   return loading ? (
     <Loading />
@@ -249,11 +258,6 @@ export default function BoardDetail(props: { boardId: number }) {
       >
         <UpdateTask
           boardId={props.boardId}
-          status={
-            state.statusList.filter(
-              (status) => taskToUpdate.oldStatusId === status.id
-            )[0].title
-          }
           taskToUpdate={taskToUpdate}
           handleTaskUpdateCB={handleUpdateTask}
           closeModalCB={() => setIsUpdateTaskModalOpen(false)}
