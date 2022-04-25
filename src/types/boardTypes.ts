@@ -1,4 +1,4 @@
-import { Errors, Overwrite } from "./common";
+import { Errors } from "./common";
 
 export type BoardCreate = {
   title: string;
@@ -45,6 +45,14 @@ export type TaskCreate = {
   title: string;
   description: string;
   board: number;
+};
+
+export type TaskUpdate = {
+  id: number;
+  oldStatusId: number;
+  newStatusId: number;
+  title: string;
+  description: string;
 };
 
 export const validateTask = (task: TaskCreate) => {

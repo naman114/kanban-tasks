@@ -4,6 +4,7 @@ import {
   BoardDetailState,
   StatusGet,
   TaskGroupByStatus,
+  TaskCreate,
 } from "./boardTypes";
 
 export type PopulateBoardDetail = {
@@ -37,9 +38,18 @@ export type AddNewTask = {
   createdTask: TaskGet;
 };
 
+export type UpdateTask = {
+  type: "update_task";
+  oldStatusId: number;
+  newStatusId: number;
+  taskId: number;
+  updatedTask: TaskGet;
+};
+
 export type BoardDetailAction =
   | PopulateBoardDetail
   | AddNewStatus
   | UpdateStatus
   | DeleteStatus
-  | AddNewTask;
+  | AddNewTask
+  | UpdateTask;

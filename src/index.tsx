@@ -9,7 +9,7 @@ import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
 if (process.env.REACT_APP_SENTRY_DSN) {
   Sentry.init({
-    dsn: "https://72fc289ee3da4f258dde52c4916b2131@o1214350.ingest.sentry.io/6354820",
+    dsn: "https://5a0e2d5463344452a99fa7fc958ec1a8@o1214350.ingest.sentry.io/6362113",
     integrations: [new BrowserTracing()],
 
     // Set tracesSampleRate to 1.0 to capture 100%

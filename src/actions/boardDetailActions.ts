@@ -1,8 +1,10 @@
-import { BoardAction } from "../types/boardActionTypes";
 import { BoardDetailAction } from "../types/boardDetailActionTypes";
-import { BoardDetailState, BoardGet } from "../types/boardTypes";
+import { BoardDetailState } from "../types/boardTypes";
 
-export const reducer = (state: BoardDetailState, action: BoardDetailAction) => {
+export const reducer = (
+  state: BoardDetailState,
+  action: BoardDetailAction
+): BoardDetailState => {
   switch (action.type) {
     case "populate_board_detail": {
       return {
@@ -59,6 +61,30 @@ export const reducer = (state: BoardDetailState, action: BoardDetailAction) => {
         statusList: state.statusList.filter(
           (status) => status.id !== action.statusId
         ),
+      };
+    }
+    case "update_task": {
+      return {
+        ...state,
+        tasksGroups: state.tasksGroups
+          .filter((group) => {
+            if (group.status === action.oldStatusId) {
+              return {
+                ...group,
+                tasks: group.tasks.filter((task) => task.id !== action.taskId),
+              };
+            }
+            return group;
+          })
+          .map((group) => {
+            if (group.status === action.newStatusId) {
+              return {
+                ...group,
+                tasks: [...group.tasks, action.updatedTask],
+              };
+            }
+            return group;
+          }),
       };
     }
   }

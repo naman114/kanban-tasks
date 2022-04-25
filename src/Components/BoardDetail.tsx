@@ -1,20 +1,18 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { Icon } from "@iconify/react";
-import moment from "moment";
 import { reducer } from "../actions/boardDetailActions";
 import Loading from "../common/Loading";
 import Modal from "../common/Modal";
 import {
   BoardGet,
-  BoardCreate,
   BoardDetailState,
   TaskGet,
   TaskGroupByStatus,
   StatusGet,
+  TaskUpdate,
 } from "../types/boardTypes";
 import { Pagination } from "../types/common";
 import {
-  deleteBoard,
   deleteStatus,
   getBoard,
   listBoardTasks,
@@ -28,6 +26,7 @@ import Sidebar from "./Sidebar";
 import BoardDetailStatus from "./BoardDetailStatus";
 import { StatusCreate, StatusUpdate } from "../types/statusTypes";
 import UpdateStatus from "./UpdateStatus";
+import UpdateTask from "./UpdateTask";
 
 const initialState = (): BoardDetailState => {
   const state: BoardDetailState = {
@@ -44,9 +43,17 @@ export default function BoardDetail(props: { boardId: number }) {
   const [isCreateStatusModalOpen, setIsCreateStatusModalOpen] = useState(false);
   const [isUpdateStatusModalOpen, setIsUpdateStatusModalOpen] = useState(false);
   const [isCreateTaskModalOpen, setIsCreateTaskModalOpen] = useState(false);
+  const [isUpdateTaskModalOpen, setIsUpdateTaskModalOpen] = useState(false);
 
   const [statusToUpdate, setStatusToUpdate] = useState<StatusUpdate>({
     id: -1,
+    title: "",
+    description: "",
+  });
+  const [taskToUpdate, setTaskToUpdate] = useState<TaskUpdate>({
+    id: -1,
+    oldStatusId: -1,
+    newStatusId: -1,
     title: "",
     description: "",
   });
@@ -98,25 +105,25 @@ export default function BoardDetail(props: { boardId: number }) {
 
   useEffect(() => {
     fetchStatusAndTasks();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleBoardUpdate = (id: number, data: BoardCreate) => {
-    const { title, description } = data;
-    // dispatch({ type: "update_board", id, field: "title", value: title });
-    // dispatch({
-    //   type: "update_board",
-    //   id,
-    //   field: "description",
-    //   value: description,
-    // });
-  };
+  // const handleBoardUpdate = (id: number, data: BoardCreate) => {
+  //   const { title, description } = data;
+  //   // dispatch({ type: "update_board", id, field: "title", value: title });
+  //   // dispatch({
+  //   //   type: "update_board",
+  //   //   id,
+  //   //   field: "description",
+  //   //   value: description,
+  //   // });
+  // };
 
-  const handleBoardDelete = async (id: number) => {
-    // dispatch({ type: "delete_board", id });
-    // setCount(count - 1);
-    await deleteBoard(id);
-    showNotification("success", "Form deleted successfully");
-  };
+  // const handleBoardDelete = async (id: number) => {
+  //   // dispatch({ type: "delete_board", id });
+  //   // setCount(count - 1);
+  //   await deleteBoard(id);
+  //   showNotification("success", "Form deleted successfully");
+  // };
 
   const handleAddStatus = (createdStatus: StatusGet) => {
     dispatch({
@@ -144,6 +151,8 @@ export default function BoardDetail(props: { boardId: number }) {
     await deleteStatus(statusId);
     showNotification("success", "Status deleted successfully");
   };
+
+  const handleUpdateTask = (oldStatusId: number, task: TaskGet) => {};
 
   return loading ? (
     <Loading />
@@ -214,6 +223,10 @@ export default function BoardDetail(props: { boardId: number }) {
                     setIsUpdateStatusModalOpen(true)
                   }
                   handleDeleteStatusCB={handleDeleteStatus}
+                  setTaskToUpdateCB={(task: TaskUpdate) => {
+                    setTaskToUpdate(task);
+                  }}
+                  openTaskUpdateModalCB={() => setIsUpdateTaskModalOpen(true)}
                 />
               );
             })}
@@ -228,6 +241,22 @@ export default function BoardDetail(props: { boardId: number }) {
           boardId={props.boardId}
           handleAddTaskCB={handleAddTask}
           closeModalCB={() => setIsCreateTaskModalOpen(false)}
+        />
+      </Modal>
+      <Modal
+        open={isUpdateTaskModalOpen}
+        closeCB={() => setIsUpdateTaskModalOpen(false)}
+      >
+        <UpdateTask
+          boardId={props.boardId}
+          status={
+            state.statusList.filter(
+              (status) => taskToUpdate.oldStatusId === status.id
+            )[0].title
+          }
+          taskToUpdate={taskToUpdate}
+          handleTaskUpdateCB={handleUpdateTask}
+          closeModalCB={() => setIsUpdateTaskModalOpen(false)}
         />
       </Modal>
       <Modal

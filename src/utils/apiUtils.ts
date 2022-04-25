@@ -8,7 +8,7 @@ import {
   updateForm,
   updateFormField,
 } from "../types/formTypes";
-import { StatusCreate, StatusUpdate } from "../types/statusTypes";
+import { StatusCreate } from "../types/statusTypes";
 import { CreateUser } from "../types/userTypes";
 import { showNotification } from "./notifUtils";
 
@@ -166,4 +166,12 @@ export const patchStatus = (statusId: number, status: StatusCreate) => {
 
 export const deleteStatus = (statusId: number) => {
   return request(`/status/${statusId}/`, "DELETE");
+};
+
+export const patchTask = (
+  boardId: number,
+  taskId: number,
+  task: TaskCreate
+) => {
+  return request(`/boards/${boardId}/tasks/${taskId}/`, "PATCH", task);
 };

@@ -4,23 +4,28 @@ import {
   StatusGet,
   TaskCreate,
   TaskGet,
+  TaskUpdate,
   validateTask,
 } from "../types/boardTypes";
 import { Errors, Pagination } from "../types/common";
-import { createTask, listStatus } from "../utils/apiUtils";
+import { listStatus, patchTask } from "../utils/apiUtils";
 import { showNotification } from "../utils/notifUtils";
 
-export default function CreateTask(props: {
+export default function UpdateTask(props: {
   boardId: number;
-  handleAddTaskCB: (createdTask: TaskGet) => void;
+  status: string;
+  taskToUpdate: TaskUpdate;
+  handleTaskUpdateCB: (oldStatusId: number, task: TaskGet) => void;
   closeModalCB: () => void;
 }) {
-  const [task, setTask] = useState({
-    statusId: -1,
-    status: "",
-    title: "",
-    description: "",
+  const [task, setTask] = useState<TaskUpdate>({
+    id: props.taskToUpdate.id,
+    oldStatusId: props.taskToUpdate.oldStatusId,
+    newStatusId: props.taskToUpdate.newStatusId,
+    title: props.taskToUpdate.title,
+    description: props.taskToUpdate.description,
   });
+  const [statusString, setStatusString] = useState(props.status);
   const [statusList, setStatusList] = useState<
     Array<{ id: number; title: string }>
   >([]);
@@ -37,20 +42,15 @@ export default function CreateTask(props: {
     });
     setLoading(false);
     setStatusList(statusListToSet);
-    setTask({
-      ...task,
-      statusId: statusListToSet[0].id,
-      status: statusListToSet[0].title,
-    });
   };
 
   useEffect(() => {
     fetchStatusList();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    console.log(task);
-  }, [task]);
+  //   useEffect(() => {
+  //     console.log(task);
+  //   }, [task]);
 
   const [errors, setErrors] = useState<Errors<TaskCreate>>({});
 
@@ -58,7 +58,7 @@ export default function CreateTask(props: {
     event.preventDefault();
 
     const payload: TaskCreate = {
-      status: task.statusId,
+      status: task.newStatusId,
       title: task.title,
       description: task.description,
       board: props.boardId,
@@ -68,9 +68,13 @@ export default function CreateTask(props: {
 
     if (Object.keys(validationErrors).length === 0) {
       try {
-        const data: TaskGet = await createTask(props.boardId, payload);
-        props.handleAddTaskCB(data);
-        showNotification("success", "Task created successfully");
+        const data: TaskGet = await patchTask(
+          props.boardId,
+          props.taskToUpdate.id,
+          payload
+        );
+        props.handleTaskUpdateCB(props.taskToUpdate.id, data);
+        showNotification("success", "Task updated successfully");
         props.closeModalCB();
       } catch (error) {
         console.log(error);
@@ -133,12 +137,12 @@ export default function CreateTask(props: {
             Status
           </label>
           <select
-            value={task.status}
+            value={statusString}
             onChange={(e) => {
+              setStatusString(e.target.value);
               setTask({
                 ...task,
-                status: e.target.value,
-                statusId: statusList.filter(
+                newStatusId: statusList.filter(
                   (s) => s.title === e.target.value
                 )[0].id,
               });

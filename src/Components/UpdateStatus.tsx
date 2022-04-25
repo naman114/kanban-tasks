@@ -1,13 +1,11 @@
-import { navigate } from "raviger";
 import React, { useState } from "react";
-import { validateBoard } from "../types/boardTypes";
 import { Errors } from "../types/common";
 import {
   StatusCreate,
   StatusUpdate,
   validateStatus,
 } from "../types/statusTypes";
-import { patchBoard, patchStatus } from "../utils/apiUtils";
+import { patchStatus } from "../utils/apiUtils";
 import { showNotification } from "../utils/notifUtils";
 
 export default function UpdateStatus(props: {

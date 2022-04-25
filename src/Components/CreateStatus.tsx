@@ -1,4 +1,3 @@
-import { navigate } from "raviger";
 import React, { useState } from "react";
 import { StatusGet } from "../types/boardTypes";
 import { Errors } from "../types/common";
