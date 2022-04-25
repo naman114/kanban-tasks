@@ -87,5 +87,19 @@ export const reducer = (
           }),
       };
     }
+    case "delete_task": {
+      return {
+        ...state,
+        tasksGroups: state.tasksGroups.map((group) => {
+          if (group.status === action.statusId) {
+            return {
+              ...group,
+              tasks: group.tasks.filter((task) => task.id !== action.taskId),
+            };
+          }
+          return group;
+        }),
+      };
+    }
   }
 };

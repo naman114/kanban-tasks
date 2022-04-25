@@ -175,3 +175,7 @@ export const patchTask = (
 ) => {
   return request(`/boards/${boardId}/tasks/${taskId}/`, "PATCH", task);
 };
+
+export const deleteTask = (boardId: number, taskId: number) => {
+  return request(`/boards/${boardId}/tasks/${taskId}/`, "DELETE");
+};

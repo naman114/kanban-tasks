@@ -12,6 +12,7 @@ export default function BoardDetailStatus(props: {
   openStatusUpdateModalCB: () => void;
   setTaskToUpdateCB: (task: TaskUpdate) => void;
   openTaskUpdateModalCB: () => void;
+  handleDeleteTaskCB: (statusId: number, taskId: number) => void;
 }) {
   const [isActive, setIsActive] = useState(false);
 
@@ -98,6 +99,7 @@ export default function BoardDetailStatus(props: {
             task={task}
             setTaskToUpdateCB={props.setTaskToUpdateCB}
             openTaskUpdateModalCB={props.openTaskUpdateModalCB}
+            handleDeleteTaskCB={props.handleDeleteTaskCB}
           />
         ))}
       </div>

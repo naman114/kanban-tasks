@@ -46,10 +46,17 @@ export type UpdateTask = {
   updatedTask: TaskGet;
 };
 
+export type DeleteTask = {
+  type: "delete_task";
+  statusId: number;
+  taskId: number;
+};
+
 export type BoardDetailAction =
   | PopulateBoardDetail
   | AddNewStatus
   | UpdateStatus
   | DeleteStatus
   | AddNewTask
-  | UpdateTask;
+  | UpdateTask
+  | DeleteTask;

@@ -14,6 +14,7 @@ import {
 import { Pagination } from "../types/common";
 import {
   deleteStatus,
+  deleteTask,
   getBoard,
   listBoardTasks,
   listStatus,
@@ -163,6 +164,12 @@ export default function BoardDetail(props: { boardId: number }) {
     });
   };
 
+  const handleDeleteTask = async (statusId: number, taskId: number) => {
+    dispatch({ type: "delete_task", statusId, taskId });
+    await deleteTask(props.boardId, taskId);
+    showNotification("success", "Task deleted successfully");
+  };
+
   return loading ? (
     <Loading />
   ) : (
@@ -236,6 +243,7 @@ export default function BoardDetail(props: { boardId: number }) {
                     setTaskToUpdate(task);
                   }}
                   openTaskUpdateModalCB={() => setIsUpdateTaskModalOpen(true)}
+                  handleDeleteTaskCB={handleDeleteTask}
                 />
               );
             })}

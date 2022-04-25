@@ -7,6 +7,7 @@ export default function BoardDetailTask(props: {
   task: TaskGet;
   setTaskToUpdateCB: (task: TaskUpdate) => void;
   openTaskUpdateModalCB: () => void;
+  handleDeleteTaskCB: (statusId: number, taskId: number) => void;
 }) {
   const [isActive, setIsActive] = useState(false);
 
@@ -45,7 +46,10 @@ export default function BoardDetailTask(props: {
                 icon: "ant-design:delete-outlined",
                 text: "Archive",
                 handler: () => {
-                  //   props.handleDeleteStatusCB(props.taskGroup.status);
+                  props.handleDeleteTaskCB(
+                    props.task.status_object.id,
+                    props.task.id
+                  );
                 },
               },
             ].map((item, idx) => {
