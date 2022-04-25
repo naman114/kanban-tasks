@@ -5,6 +5,8 @@ export type StatusCreate = {
   description: string;
 };
 
+export type StatusUpdate = StatusCreate & { id: number };
+
 export const validateStatus = (status: StatusCreate) => {
   const errors: Errors<StatusCreate> = {};
   if (status.title.length < 1) {

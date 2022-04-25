@@ -36,5 +36,30 @@ export const reducer = (state: BoardDetailState, action: BoardDetailAction) => {
         }),
       };
     }
+    case "update_status": {
+      return {
+        ...state,
+        statusList: state.statusList.map((status) => {
+          if (status.id === action.statusId) {
+            return {
+              ...status,
+              title: action.newTitle,
+            };
+          }
+          return status;
+        }),
+      };
+    }
+    case "delete_status": {
+      return {
+        ...state,
+        tasksGroups: state.tasksGroups.filter(
+          (group) => group.status !== action.statusId
+        ),
+        statusList: state.statusList.filter(
+          (status) => status.id !== action.statusId
+        ),
+      };
+    }
   }
 };

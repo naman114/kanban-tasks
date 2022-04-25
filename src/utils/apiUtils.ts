@@ -8,7 +8,7 @@ import {
   updateForm,
   updateFormField,
 } from "../types/formTypes";
-import { StatusCreate } from "../types/statusTypes";
+import { StatusCreate, StatusUpdate } from "../types/statusTypes";
 import { CreateUser } from "../types/userTypes";
 import { showNotification } from "./notifUtils";
 
@@ -156,4 +156,14 @@ export const createStatus = (status: StatusCreate) => {
 
 export const createTask = (boardId: number, task: TaskCreate) => {
   return request(`/boards/${boardId}/tasks/`, "POST", task);
+};
+
+export const patchStatus = (statusId: number, status: StatusCreate) => {
+  return request(`/status/${statusId}/`, "PATCH", {
+    title: status.title,
+  });
+};
+
+export const deleteStatus = (statusId: number) => {
+  return request(`/status/${statusId}/`, "DELETE");
 };

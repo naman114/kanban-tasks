@@ -15,6 +15,7 @@ import {
 import { Pagination } from "../types/common";
 import {
   deleteBoard,
+  deleteStatus,
   getBoard,
   listBoardTasks,
   listStatus,
@@ -24,6 +25,9 @@ import Content from "./Content";
 import CreateStatus from "./CreateStatus";
 import CreateTask from "./CreateTask";
 import Sidebar from "./Sidebar";
+import BoardDetailStatus from "./BoardDetailStatus";
+import { StatusCreate, StatusUpdate } from "../types/statusTypes";
+import UpdateStatus from "./UpdateStatus";
 
 const initialState = (): BoardDetailState => {
   const state: BoardDetailState = {
@@ -38,7 +42,14 @@ export default function BoardDetail(props: { boardId: number }) {
   const [state, dispatch] = useReducer(reducer, null, () => initialState());
   const [loading, setLoading] = useState(false);
   const [isCreateStatusModalOpen, setIsCreateStatusModalOpen] = useState(false);
+  const [isUpdateStatusModalOpen, setIsUpdateStatusModalOpen] = useState(false);
   const [isCreateTaskModalOpen, setIsCreateTaskModalOpen] = useState(false);
+
+  const [statusToUpdate, setStatusToUpdate] = useState<StatusUpdate>({
+    id: -1,
+    title: "",
+    description: "",
+  });
 
   useEffect(() => {
     console.log(state);
@@ -124,6 +135,16 @@ export default function BoardDetail(props: { boardId: number }) {
     });
   };
 
+  const handleUpdateStatus = (statusId: number, data: StatusCreate) => {
+    dispatch({ type: "update_status", statusId, newTitle: data.title });
+  };
+
+  const handleDeleteStatus = async (statusId: number) => {
+    dispatch({ type: "delete_status", statusId });
+    await deleteStatus(statusId);
+    showNotification("success", "Status deleted successfully");
+  };
+
   return loading ? (
     <Loading />
   ) : (
@@ -183,80 +204,17 @@ export default function BoardDetail(props: { boardId: number }) {
           <div className="mt-4 flex flex-grow space-x-6 overflow-auto">
             {state.tasksGroups.map((taskGroup) => {
               return (
-                <div className="flex w-72 flex-shrink-0 flex-col bg-stone-100">
-                  <div className="flex h-10 flex-shrink-0 items-center px-2">
-                    <span className="block text-sm font-semibold">
-                      {
-                        state.statusList.filter(
-                          (status) => status.id === taskGroup.status
-                        )[0].title
-                      }
-                    </span>
-                    <span className="ml-2 flex h-5 w-5 items-center justify-center rounded bg-white bg-opacity-30 text-sm font-semibold text-slate-900">
-                      {taskGroup.tasks.length}
-                    </span>
-                    <button className="ml-auto flex h-6 w-6 items-center justify-center rounded text-slate-900 hover:bg-stone-300 hover:text-black">
-                      <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                  <div className="flex flex-col overflow-auto p-2">
-                    <hr className="mb-3 h-[] bg-zinc-500" />
-                    {taskGroup.tasks.map((task) => (
-                      <div
-                        className="group relative mt-3 flex cursor-pointer flex-col items-start rounded-lg bg-stone-200 bg-opacity-90 p-4 hover:bg-opacity-100"
-                        draggable="true"
-                      >
-                        <button className="absolute top-0 right-0 mt-3 mr-2 hidden h-5 w-5 items-center justify-center rounded text-gray-500 hover:bg-gray-200 hover:text-gray-700 group-hover:flex">
-                          <svg
-                            className="h-4 w-4 fill-current"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                          >
-                            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                          </svg>
-                        </button>
-                        <span className="flex h-6 items-center rounded-full text-lg font-semibold text-slate-900">
-                          {task.title}
-                        </span>
-                        <h4 className="mt-3 text-sm font-medium text-zinc-500">
-                          {task.description}
-                        </h4>
-                        <div className="mt-3 flex w-full items-center text-xs font-medium text-gray-400">
-                          <div className="flex items-center">
-                            <svg
-                              className="h-4 w-4 fill-current text-gray-300"
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                            <span className="ml-1 leading-none">
-                              {moment(task.modified_date).format("LLLL")}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                <BoardDetailStatus
+                  taskGroup={taskGroup}
+                  statusList={state.statusList}
+                  setStatusToUpdateCB={(status: StatusUpdate) => {
+                    setStatusToUpdate(status);
+                  }}
+                  openStatusUpdateModalCB={() =>
+                    setIsUpdateStatusModalOpen(true)
+                  }
+                  handleDeleteStatusCB={handleDeleteStatus}
+                />
               );
             })}
           </div>
@@ -280,6 +238,16 @@ export default function BoardDetail(props: { boardId: number }) {
           boardId={props.boardId}
           handleAddStatusCB={handleAddStatus}
           closeModalCB={() => setIsCreateStatusModalOpen(false)}
+        />
+      </Modal>
+      <Modal
+        open={isUpdateStatusModalOpen}
+        closeCB={() => setIsUpdateStatusModalOpen(false)}
+      >
+        <UpdateStatus
+          statusToUpdate={statusToUpdate}
+          handleStatusUpdateCB={handleUpdateStatus}
+          closeModalCB={() => setIsUpdateStatusModalOpen(false)}
         />
       </Modal>
     </div>
