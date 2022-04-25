@@ -20,4 +20,10 @@ export type AddNewStatus = {
   createdStatus: StatusGet;
 };
 
-export type BoardDetailAction = PopulateBoardDetail | AddNewStatus;
+export type AddNewTask = {
+  type: "add_new_task";
+  statusId: number;
+  createdTask: TaskGet;
+};
+
+export type BoardDetailAction = PopulateBoardDetail | AddNewStatus | AddNewTask;

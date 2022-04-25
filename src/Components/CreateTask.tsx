@@ -1,13 +1,19 @@
 import { navigate } from "raviger";
 import React, { useEffect, useState } from "react";
 import Loading from "../common/Loading";
-import { StatusGet, TaskCreate, validateTask } from "../types/boardTypes";
+import {
+  StatusGet,
+  TaskCreate,
+  TaskGet,
+  validateTask,
+} from "../types/boardTypes";
 import { Errors, Pagination } from "../types/common";
 import { createBoard, createTask, listStatus } from "../utils/apiUtils";
 import { showNotification } from "../utils/notifUtils";
 
 export default function CreateTask(props: {
   boardId: number;
+  handleAddTaskCB: (createdTask: TaskGet) => void;
   closeModalCB: () => void;
 }) {
   const [task, setTask] = useState({
@@ -23,21 +29,29 @@ export default function CreateTask(props: {
 
   const fetchStatusList = async () => {
     setLoading(true);
-    const statusList: Pagination<StatusGet> = await listStatus();
-    setLoading(false);
-    const currentBoardStatuses: StatusGet[] = statusList.results.filter(
+    const statusListFetched: Pagination<StatusGet> = await listStatus();
+    const currentBoardStatuses: StatusGet[] = statusListFetched.results.filter(
       (result) => Number(result.description.split("#")[1]) === props.boardId
     );
-    setStatusList(
-      currentBoardStatuses.map((s) => {
-        return { id: s.id, title: s.title };
-      })
-    );
+    const statusListToSet = currentBoardStatuses.map((s) => {
+      return { id: s.id, title: s.title };
+    });
+    setLoading(false);
+    setStatusList(statusListToSet);
+    setTask({
+      ...task,
+      statusId: statusListToSet[0].id,
+      status: statusListToSet[0].title,
+    });
   };
 
   useEffect(() => {
     fetchStatusList();
   }, []);
+
+  useEffect(() => {
+    console.log(task);
+  }, [task]);
 
   const [errors, setErrors] = useState<Errors<TaskCreate>>({});
 
@@ -55,8 +69,9 @@ export default function CreateTask(props: {
 
     if (Object.keys(validationErrors).length === 0) {
       try {
-        const data = await createTask(props.boardId, payload);
-        showNotification("success", "Board created successfully");
+        const data: TaskGet = await createTask(props.boardId, payload);
+        props.handleAddTaskCB(data);
+        showNotification("success", "Task created successfully");
         props.closeModalCB();
       } catch (error) {
         console.log(error);

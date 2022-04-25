@@ -114,7 +114,14 @@ export default function BoardDetail(props: { boardId: number }) {
       tasks: [],
       createdStatus,
     });
-    // setStatusList([...statusList, createdStatus]);
+  };
+
+  const handleAddTask = (createdTask: TaskGet) => {
+    dispatch({
+      type: "add_new_task",
+      statusId: createdTask.status_object.id,
+      createdTask,
+    });
   };
 
   return loading ? (
@@ -144,10 +151,11 @@ export default function BoardDetail(props: { boardId: number }) {
                 <p>New Status</p>
               </button>
               <button
+                disabled={state.tasksGroups.length === 0}
                 onClick={(_) => {
                   setIsCreateTaskModalOpen(true);
                 }}
-                className="group relative flex items-center justify-center gap-2 rounded border-2 border-zinc-500 py-2 px-4 text-sm text-gray-500 hover:bg-slate-200 focus:outline-none"
+                className="group relative flex items-center justify-center gap-2 rounded border-2 border-zinc-500 py-2 px-4 text-sm text-gray-500 hover:bg-slate-200 focus:outline-none disabled:border-zinc-200 disabled:text-gray-200"
               >
                 <Icon
                   icon="ant-design:plus-square-outlined"
@@ -260,6 +268,7 @@ export default function BoardDetail(props: { boardId: number }) {
       >
         <CreateTask
           boardId={props.boardId}
+          handleAddTaskCB={handleAddTask}
           closeModalCB={() => setIsCreateTaskModalOpen(false)}
         />
       </Modal>

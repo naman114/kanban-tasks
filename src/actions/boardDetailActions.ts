@@ -22,5 +22,19 @@ export const reducer = (state: BoardDetailState, action: BoardDetailAction) => {
         statusList: [...state.statusList, action.createdStatus],
       };
     }
+    case "add_new_task": {
+      return {
+        ...state,
+        tasksGroups: state.tasksGroups.map((group) => {
+          if (group.status === action.statusId) {
+            return {
+              ...group,
+              tasks: [...group.tasks, action.createdTask],
+            };
+          }
+          return group;
+        }),
+      };
+    }
   }
 };
