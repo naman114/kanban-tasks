@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react";
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useState } from "react";
 import Content from "./Content";
 import Sidebar from "./Sidebar";
 
