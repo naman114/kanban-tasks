@@ -7,12 +7,7 @@ import Modal from "../common/Modal";
 import Paginate from "../common/Paginate";
 import { BoardGet, BoardCreate, BoardUpdate } from "../types/boardTypes";
 import { Pagination } from "../types/common";
-import {
-  deleteBoard,
-  deleteForm,
-  listBoards,
-  patchBoard,
-} from "../utils/apiUtils";
+import { deleteBoard, listBoards } from "../utils/apiUtils";
 import { showNotification } from "../utils/notifUtils";
 import BoardListItem from "./BoardListItem";
 import Content from "./Content";

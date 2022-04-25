@@ -1,4 +1,3 @@
-import { navigate } from "raviger";
 import React, { useState } from "react";
 import { BoardCreate, BoardUpdate, validateBoard } from "../types/boardTypes";
 import { Errors } from "../types/common";
