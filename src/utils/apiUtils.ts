@@ -1,13 +1,6 @@
 import { navigate } from "raviger";
 import { BoardCreate, TaskCreate } from "../types/boardTypes";
 import { PaginationParams } from "../types/common";
-import {
-  createFormField,
-  Form,
-  FormSubmission,
-  updateForm,
-  updateFormField,
-} from "../types/formTypes";
 import { StatusCreate } from "../types/statusTypes";
 import { CreateUser } from "../types/userTypes";
 import { showNotification } from "./notifUtils";
@@ -76,50 +69,6 @@ export const register = (data: CreateUser) => {
 
 export const me = () => {
   return request("/users/me/", "GET", {});
-};
-
-export const createForm = (form: Form) => {
-  return request("/forms/", "POST", form);
-};
-
-export const listForms = (pageParams: PaginationParams) => {
-  return request("/forms/", "GET", pageParams);
-};
-
-export const deleteForm = (id: number) => {
-  return request(`/forms/${id}/`, "DELETE");
-};
-
-export const getForm = (id: number) => {
-  return request(`/forms/${id}/`, "GET");
-};
-
-export const createField = (formId: number, field: createFormField) => {
-  return request(`/forms/${formId}/fields/`, "POST", field);
-};
-
-export const getFormFields = (formId: number) => {
-  return request(`/forms/${formId}/fields/`, "GET");
-};
-
-export const deleteFormField = (formId: number, fieldId: number) => {
-  return request(`/forms/${formId}/fields/${fieldId}/`, "DELETE");
-};
-
-export const patchFormField = (
-  formId: number,
-  fieldId: number,
-  data: updateFormField
-) => {
-  return request(`/forms/${formId}/fields/${fieldId}/`, "PATCH", data);
-};
-
-export const patchForm = (formId: number, data: updateForm) => {
-  return request(`/forms/${formId}/`, "PATCH", data);
-};
-
-export const createSubmission = (formId: number, data: FormSubmission) => {
-  return request(`/forms/${formId}/submission/`, "POST", data);
 };
 
 export const createBoard = (board: any) => {

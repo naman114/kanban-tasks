@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
 import React, { useContext } from "react";
-import { userContext } from "../utils/formUtils";
+import { userContext } from "../utils/userUtils";
 
 export default function Navbar() {
   const currentUser = useContext(userContext);

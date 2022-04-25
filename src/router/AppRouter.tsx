@@ -2,17 +2,14 @@ import React, { lazy, Suspense } from "react";
 import { useContext } from "react";
 import { useRoutes } from "raviger";
 import AppContainer from "../Components/AppContainer";
-import { userContext } from "../utils/formUtils";
+import { userContext } from "../utils/userUtils";
 import Loading from "../common/Loading";
-import Register from "../Components/Register";
-import Home from "../Components/Home";
-import Boards from "../Components/Boards";
-import BoardDetail from "../Components/BoardDetail";
 
 const Login = lazy(() => import("../Components/Login"));
-const About = lazy(() => import("../Components/About"));
-const FormList = lazy(() => import("../Components/FormList"));
-const Preview = lazy(() => import("../Components/Preview"));
+const Register = lazy(() => import("../Components/Register"));
+const Home = lazy(() => import("../Components/Home"));
+const Boards = lazy(() => import("../Components/Boards"));
+const BoardDetail = lazy(() => import("../Components/BoardDetail"));
 
 export default function AppRouter() {
   const currentUser = useContext(userContext);
@@ -29,14 +26,6 @@ export default function AppRouter() {
         <Login />
       ) : (
         <BoardDetail boardId={Number(id)} />
-      ),
-    "/about": () => <About />,
-    "/forms": () => <FormList />,
-    "/preview/:id": ({ id }: { id: string }) =>
-      currentUser.status === "NOT_AUTHENTICATED" ? (
-        <Login />
-      ) : (
-        <Preview formId={Number(id)} />
       ),
   };
 
