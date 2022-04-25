@@ -1,4 +1,4 @@
-import { BoardGet } from "./boardTypes";
+import { BoardGet, TaskGet } from "./boardTypes";
 
 export type PopulateBoards = {
   type: "populate_boards";

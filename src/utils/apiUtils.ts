@@ -1,3 +1,4 @@
+import { navigate } from "raviger";
 import { BoardCreate, TaskCreate } from "../types/boardTypes";
 import { PaginationParams } from "../types/common";
 import {
@@ -11,7 +12,7 @@ import { StatusCreate } from "../types/statusTypes";
 import { CreateUser } from "../types/userTypes";
 import { showNotification } from "./notifUtils";
 
-const API_BASE_URL = "http://localhost:8000/api";
+const API_BASE_URL = "https://api-kanbantasks.herokuapp.com/api";
 
 type RequestMethod = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
 
@@ -55,6 +56,9 @@ export const request = async (
       ?.includes("application/json");
     const json = isJson ? await response.json() : null;
     return json;
+  } else if (response.status === 403) {
+    localStorage.removeItem("token");
+    navigate("/");
   } else {
     const errorJson = await response.json();
     showNotification("danger", "Something went wrong");

@@ -130,7 +130,6 @@ export default function CreateTask(props: {
               });
             }}
           >
-            <option value="">Select an option</option>
             {statusList.map((option, index) => (
               <option key={index} value={option.title}>
                 {option.title}

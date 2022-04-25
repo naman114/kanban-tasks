@@ -1,15 +1,12 @@
+import React, { useEffect, useReducer, useState } from "react";
 import { Icon } from "@iconify/react";
 import moment from "moment";
-import { useQueryParams } from "raviger";
-import React, { useEffect, useReducer, useState } from "react";
 import { reducer } from "../actions/boardDetailActions";
 import Loading from "../common/Loading";
 import Modal from "../common/Modal";
-import Paginate from "../common/Paginate";
 import {
   BoardGet,
   BoardCreate,
-  BoardUpdate,
   BoardDetailState,
   TaskGet,
   TaskGroupByStatus,
@@ -18,56 +15,30 @@ import {
 import { Pagination } from "../types/common";
 import {
   deleteBoard,
-  deleteForm,
   getBoard,
-  listBoards,
   listBoardTasks,
   listStatus,
-  patchBoard,
 } from "../utils/apiUtils";
 import { showNotification } from "../utils/notifUtils";
-import BoardListItem from "./BoardListItem";
 import Content from "./Content";
-import CreateBoard from "./CreateBoard";
 import CreateStatus from "./CreateStatus";
 import CreateTask from "./CreateTask";
 import Sidebar from "./Sidebar";
-import UpdateBoard from "./UpdateBoard";
 
 const initialState = (): BoardDetailState => {
   const state: BoardDetailState = {
     title: "",
     tasksGroups: [],
+    statusList: [],
   };
   return state;
 };
 
 export default function BoardDetail(props: { boardId: number }) {
   const [state, dispatch] = useReducer(reducer, null, () => initialState());
-  const [newBoard, setNewBoard] = useState(false);
-  const [{ page }, setPageQP] = useQueryParams();
-  const [pageNum, setPageNum] = useState<number>(page ?? 1);
-  const [count, setCount] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [isCreateStatusModalOpen, setIsCreateStatusModalOpen] = useState(false);
   const [isCreateTaskModalOpen, setIsCreateTaskModalOpen] = useState(false);
-  const [boardToUpdate, setBoardToUpdate] = useState<BoardUpdate>({
-    id: -1,
-    title: "",
-    description: "",
-  });
-  const [statusList, setStatusList] = useState<Array<StatusGet>>();
-  const [taskList, setTaskList] = useState<Array<TaskGet>>();
-
-  const fetchTitle = async () => {
-    const data: BoardGet = await getBoard(props.boardId);
-    dispatch({
-      type: "populate_board_detail",
-      field: "title",
-      value: data.title,
-    });
-  };
 
   useEffect(() => {
     console.log(state);
@@ -76,14 +47,13 @@ export default function BoardDetail(props: { boardId: number }) {
   const fetchStatusAndTasks = async () => {
     try {
       setLoading(true);
+      const board: BoardGet = await getBoard(props.boardId);
       const taskList: Pagination<TaskGet> = await listBoardTasks(props.boardId);
       const statusList: Pagination<StatusGet> = await listStatus();
-      setTaskList(taskList.results);
-      setStatusList(statusList.results);
-
       const currentBoardStatuses: StatusGet[] = statusList.results.filter(
         (result) => Number(result.description.split("#")[1]) === props.boardId
       );
+
       const taskGroups: TaskGroupByStatus[] = currentBoardStatuses.map(
         (result) => {
           console.log({ result });
@@ -105,8 +75,9 @@ export default function BoardDetail(props: { boardId: number }) {
       setLoading(false);
       dispatch({
         type: "populate_board_detail",
-        field: "tasksGroups",
-        value: taskGroups,
+        title: board.title,
+        taskGroups,
+        statusList: statusList.results,
       });
     } catch (error) {
       console.error(error);
@@ -115,7 +86,6 @@ export default function BoardDetail(props: { boardId: number }) {
   };
 
   useEffect(() => {
-    fetchTitle();
     fetchStatusAndTasks();
   }, []);
 
@@ -132,9 +102,19 @@ export default function BoardDetail(props: { boardId: number }) {
 
   const handleBoardDelete = async (id: number) => {
     // dispatch({ type: "delete_board", id });
-    setCount(count - 1);
+    // setCount(count - 1);
     await deleteBoard(id);
     showNotification("success", "Form deleted successfully");
+  };
+
+  const handleAddStatus = (createdStatus: StatusGet) => {
+    dispatch({
+      type: "add_new_status",
+      statusId: createdStatus.id,
+      tasks: [],
+      createdStatus,
+    });
+    // setStatusList([...statusList, createdStatus]);
   };
 
   return loading ? (
@@ -199,7 +179,7 @@ export default function BoardDetail(props: { boardId: number }) {
                   <div className="flex h-10 flex-shrink-0 items-center px-2">
                     <span className="block text-sm font-semibold">
                       {
-                        statusList?.filter(
+                        state.statusList.filter(
                           (status) => status.id === taskGroup.status
                         )[0].title
                       }
@@ -289,6 +269,7 @@ export default function BoardDetail(props: { boardId: number }) {
       >
         <CreateStatus
           boardId={props.boardId}
+          handleAddStatusCB={handleAddStatus}
           closeModalCB={() => setIsCreateStatusModalOpen(false)}
         />
       </Modal>

@@ -30,6 +30,7 @@ function App() {
     try {
       getCurrentUser(setCurrentUser);
     } catch (error) {
+      console.log("removing token");
       localStorage.removeItem("token");
       console.log(error);
     }

@@ -1,5 +1,6 @@
 import { navigate } from "raviger";
 import React, { useState } from "react";
+import { StatusGet } from "../types/boardTypes";
 import { Errors } from "../types/common";
 import { StatusCreate, validateStatus } from "../types/statusTypes";
 import { createStatus } from "../utils/apiUtils";
@@ -7,6 +8,7 @@ import { showNotification } from "../utils/notifUtils";
 
 export default function CreateStatus(props: {
   boardId: number;
+  handleAddStatusCB: (createdStatus: StatusGet) => void;
   closeModalCB: () => void;
 }) {
   const [status, setStatus] = useState<StatusCreate>({
@@ -25,8 +27,11 @@ export default function CreateStatus(props: {
 
     if (Object.keys(validationErrors).length === 0) {
       try {
-        await createStatus(status);
+        const createdStatus: StatusGet = await createStatus(status);
+        console.log({ createdStatus });
+        props.handleAddStatusCB(createdStatus);
         showNotification("success", "Status created successfully");
+        // navigate(`/boards/${props.boardId}/`);
         props.closeModalCB();
       } catch (error) {
         console.log(error);
@@ -58,7 +63,7 @@ export default function CreateStatus(props: {
           />
           {errors.title && <p className="text-red-500">{errors.title}</p>}
         </div>
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <label
             htmlFor="description"
             className={`${errors.description ? "text-red-500" : ""}`}
@@ -78,7 +83,7 @@ export default function CreateStatus(props: {
           {errors.description && (
             <p className="text-red-500">{errors.description}</p>
           )}
-        </div>
+        </div> */}
         <button
           type="submit"
           className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"

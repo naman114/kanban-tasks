@@ -64,6 +64,7 @@ export const validateTask = (task: TaskCreate) => {
 export type BoardDetailState = {
   title: string;
   tasksGroups: TaskGroupByStatus[];
+  statusList: StatusGet[];
 };
 
 export const validateBoard = (board: BoardCreate) => {
