@@ -4,6 +4,7 @@ import { useRoutes } from "raviger";
 import AppContainer from "../Components/AppContainer";
 import { userContext } from "../utils/userUtils";
 import Loading from "../common/Loading";
+import Todo from "../Components/Todo";
 
 const Login = lazy(() => import("../Components/Login"));
 const Register = lazy(() => import("../Components/Register"));
@@ -27,6 +28,7 @@ export default function AppRouter() {
       ) : (
         <BoardDetail boardId={Number(id)} />
       ),
+    "/todo": () => <Todo />,
   };
 
   let routeResult = useRoutes(routes);
