@@ -94,8 +94,9 @@ export default function BoardDetailStatus(props: {
       </div>
       <div className="flex flex-col overflow-auto p-2">
         <hr className="mb-3 h-[] bg-zinc-500" />
-        {props.taskGroup.tasks.map((task) => (
+        {props.taskGroup.tasks.map((task, index) => (
           <BoardDetailTask
+            key={index}
             task={task}
             setTaskToUpdateCB={props.setTaskToUpdateCB}
             openTaskUpdateModalCB={props.openTaskUpdateModalCB}

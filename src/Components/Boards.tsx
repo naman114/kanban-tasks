@@ -119,9 +119,10 @@ export default function Boards() {
           </div>
 
           <div className="grid grid-cols-3 gap-4">
-            {state.map((board) => {
+            {state.map((board, index) => {
               return (
                 <BoardListItem
+                  key={index}
                   board={board}
                   setBoardToUpdateCB={(boardToUpdate: BoardUpdate) =>
                     setBoardToUpdate(boardToUpdate)

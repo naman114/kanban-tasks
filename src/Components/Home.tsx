@@ -168,9 +168,10 @@ export default function Home() {
             <div className="flex flex-col">
               <div className="flex w-full gap-4 border-b-2">
                 {state.map((boardData) => {
-                  return boardData.data.map((group) => {
+                  return boardData.data.map((group, index) => {
                     return (
                       <button
+                        key={index}
                         className={
                           group.status === currentStatus
                             ? statusClassName.active
@@ -193,9 +194,12 @@ export default function Home() {
                   return boardData.data
                     .filter((group) => group.status === currentStatus)
                     .map((group) => {
-                      return group.tasks.map((task) => {
+                      return group.tasks.map((task, index) => {
                         return (
-                          <div className="w-full rounded bg-stone-200">
+                          <div
+                            key={index}
+                            className="w-full rounded bg-stone-200"
+                          >
                             <p className="px-8 py-4 font-medium text-zinc-500">
                               {task.title}
                             </p>

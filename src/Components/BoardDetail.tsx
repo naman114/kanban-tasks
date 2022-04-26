@@ -195,9 +195,10 @@ export default function BoardDetail(props: { boardId: number }) {
             </div>
           </div>
           <div className="mt-4 flex flex-grow space-x-6 overflow-auto">
-            {state.tasksGroups.map((taskGroup) => {
+            {state.tasksGroups.map((taskGroup, index) => {
               return (
                 <BoardDetailStatus
+                  key={index}
                   taskGroup={taskGroup}
                   statusList={state.statusList}
                   setStatusToUpdateCB={(status: StatusUpdate) => {

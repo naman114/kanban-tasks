@@ -145,10 +145,11 @@ export default function Todo() {
           </div>
           {view === "grid" ? (
             <div className="grid grid-cols-3 gap-4">
-              {state.map((task) => {
+              {state.map((task, index) => {
                 console.log(task);
                 return (
                   <div
+                    key={index}
                     className={`flex flex-col rounded-xl  py-6 px-6 ${
                       task.is_completed ? "bg-stone-100" : "bg-stone-200"
                     }`}
@@ -202,9 +203,10 @@ export default function Todo() {
             </div>
           ) : (
             <div className="flex flex-col gap-4">
-              {state.map((task) => {
+              {state.map((task, index) => {
                 return (
                   <div
+                    key={index}
                     className={`flex w-full items-center justify-between rounded-xl px-8 py-6 pl-8 ${
                       task.is_completed ? "bg-stone-100" : "bg-stone-200"
                     }`}
