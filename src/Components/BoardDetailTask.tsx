@@ -22,6 +22,7 @@ export default function BoardDetailTask(props: {
       description: props.task.description,
       oldStatusId: props.task.status_object.id,
       newStatusId: -1,
+      is_completed: props.task.is_completed,
     });
     props.openTaskUpdateModalCB();
   };

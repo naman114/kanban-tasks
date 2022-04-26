@@ -23,6 +23,7 @@ export default function UpdateTask(props: {
     newStatusId: props.taskToUpdate.newStatusId,
     title: props.taskToUpdate.title,
     description: props.taskToUpdate.description,
+    is_completed: props.taskToUpdate.is_completed,
   });
   const [statusString, setStatusString] = useState("");
   const [statusList, setStatusList] = useState<
@@ -66,6 +67,7 @@ export default function UpdateTask(props: {
       title: task.title,
       description: task.description,
       board: props.boardId,
+      is_completed: task.is_completed,
     };
     const validationErrors = validateTask(payload);
     setErrors(validationErrors);

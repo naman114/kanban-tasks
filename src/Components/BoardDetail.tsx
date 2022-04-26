@@ -57,6 +57,7 @@ export default function BoardDetail(props: { boardId: number }) {
     newStatusId: -1,
     title: "",
     description: "",
+    is_completed: false,
   });
 
   useEffect(() => {

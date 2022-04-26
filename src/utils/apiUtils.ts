@@ -6,6 +6,7 @@ import { CreateUser } from "../types/userTypes";
 import { showNotification } from "./notifUtils";
 
 const API_BASE_URL = "https://api-kanbantasks.herokuapp.com/api";
+// const API_BASE_URL = "http://127.0.0.1:8000/api";
 
 type RequestMethod = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
 

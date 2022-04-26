@@ -34,7 +34,7 @@ export default function BoardDetailStatus(props: {
   };
 
   return (
-    <div className="flex w-72 flex-shrink-0 flex-col bg-stone-100">
+    <div className="mb-10 flex w-72 flex-shrink-0 flex-col bg-stone-100">
       <div className="relative flex h-10 flex-shrink-0 items-center justify-between px-2">
         <div className="flex">
           <span className="block text-sm font-semibold">

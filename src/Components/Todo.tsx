@@ -1,12 +1,68 @@
 import { Icon } from "@iconify/react";
-import React, { useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
+import { reducer } from "../actions/todoActions";
+import Loading from "../common/Loading";
+import { BoardGet, TaskCreate, TaskGet } from "../types/boardTypes";
+import { Pagination } from "../types/common";
+import { listBoards, listBoardTasks, patchTask } from "../utils/apiUtils";
+import { showNotification } from "../utils/notifUtils";
 import Content from "./Content";
 import Sidebar from "./Sidebar";
 
+const initialState = (): TaskGet[] => {
+  const tasks: TaskGet[] = [];
+  return tasks;
+};
+
 export default function Todo() {
   const [view, setView] = useState("grid");
-  return (
-    <div className="flex h-screen overflow-hidden">
+  const [state, dispatch] = useReducer(reducer, null, () => initialState());
+  const [loading, setLoading] = useState(true);
+
+  const fetchTasks = async () => {
+    const tasks: TaskGet[] = [];
+    try {
+      setLoading(true);
+      const boardList: Pagination<BoardGet> = await listBoards({});
+      for (const board of boardList.results) {
+        const taskList: Pagination<TaskGet> = await listBoardTasks(board.id);
+        tasks.push(...taskList.results);
+      }
+      setLoading(false);
+      dispatch({
+        type: "populate_todo_tasks",
+        tasks,
+      });
+    } catch (error) {
+      console.error(error);
+      showNotification("danger", "Error occured in fetching board");
+    }
+  };
+
+  useEffect(() => {
+    fetchTasks();
+  }, []);
+
+  useEffect(() => {
+    console.log(state);
+  }, [state]);
+
+  const updateTaskCompletion = async (task: TaskGet, is_completed: boolean) => {
+    const payload: TaskCreate = {
+      status: task.status_object.id,
+      title: task.title,
+      description: task.description,
+      board: task.board,
+      is_completed,
+    };
+    await patchTask(task.board_object.id, task.id, payload);
+    showNotification("success", "Task updated successfully");
+  };
+
+  return loading ? (
+    <Loading />
+  ) : (
+    <div className="flex h-screen">
       <Sidebar />
       <Content>
         <div className="m-10">
@@ -89,105 +145,114 @@ export default function Todo() {
           </div>
           {view === "grid" ? (
             <div className="grid grid-cols-3 gap-4">
-              <div className="flex flex-col rounded-xl bg-stone-200 py-6 px-6">
-                <div className="flex justify-end">
-                  <button className="h-6 w-6 rounded-full border-[1px] border-black bg-white"></button>
-                </div>
-                <div className="flex flex-col gap-4">
-                  <p className="text-lg font-semibold text-slate-900">
-                    Setup the meeting
-                  </p>
-                  <p className="text-zinc-500">
-                    Join the google meeting using the link
-                    https://meet.google.com/okr-1jklk
-                  </p>
-                  <div className="flex justify-end">
-                    <Icon
-                      icon="mi:options-horizontal"
-                      className="cursor-pointer text-xl"
-                    />
+              {state.map((task) => {
+                console.log(task);
+                return (
+                  <div
+                    className={`flex flex-col rounded-xl  py-6 px-6 ${
+                      task.is_completed ? "bg-stone-100" : "bg-stone-200"
+                    }`}
+                  >
+                    <div className="flex justify-end">
+                      <button
+                        onClick={() => {
+                          dispatch({
+                            type: "update_task",
+                            taskId: task.id,
+                            is_completed: task.is_completed ? false : true,
+                          });
+                          updateTaskCompletion(
+                            task,
+                            task.is_completed ? false : true
+                          );
+                        }}
+                        className="flex h-6 w-6 items-center justify-center rounded-full border-[1px] border-black bg-white"
+                      >
+                        <Icon
+                          icon="charm:circle-tick"
+                          className={`${task.is_completed ? "" : "hidden"}`}
+                        />
+                      </button>
+                    </div>
+                    <div className="flex flex-col gap-4">
+                      <p
+                        className={`text-lg font-semibold text-slate-900 ${
+                          task.is_completed ? "line-through" : ""
+                        }`}
+                      >
+                        {task.title}
+                      </p>
+                      <p
+                        className={`text-zinc-500 ${
+                          task.is_completed ? "line-through" : ""
+                        }`}
+                      >
+                        {task.description}
+                      </p>
+                      <div className="flex justify-end">
+                        <Icon
+                          icon="mi:options-horizontal"
+                          className="cursor-pointer text-xl"
+                        />
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div className="flex flex-col rounded-xl bg-stone-200 py-6 px-6">
-                <div className="flex justify-end">
-                  <button className="h-6 w-6 rounded-full border-[1px] border-black bg-white"></button>
-                </div>
-                <div className="flex flex-col gap-4">
-                  <p className="text-lg font-semibold text-slate-900">
-                    Setup the meeting
-                  </p>
-                  <p className="text-zinc-500">
-                    Join the google meeting using the link
-                    https://meet.google.com/okr-1jklk
-                  </p>
-                  <div className="flex justify-end">
-                    <Icon
-                      icon="mi:options-horizontal"
-                      className="cursor-pointer text-xl"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col rounded-xl bg-stone-200 py-6 px-6">
-                <div className="flex justify-end">
-                  <button className="h-6 w-6 rounded-full border-[1px] border-black bg-white"></button>
-                </div>
-                <div className="flex flex-col gap-4">
-                  <p className="text-lg font-semibold text-slate-900">
-                    Setup the meeting
-                  </p>
-                  <p className="text-zinc-500">
-                    Join the google meeting using the link
-                    https://meet.google.com/okr-1jklk
-                  </p>
-                  <div className="flex justify-end">
-                    <Icon
-                      icon="mi:options-horizontal"
-                      className="cursor-pointer text-xl"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col rounded-xl bg-stone-200 py-6 px-6">
-                <div className="flex justify-end">
-                  <button className="h-6 w-6 rounded-full border-[1px] border-black bg-white"></button>
-                </div>
-                <div className="flex flex-col gap-4">
-                  <p className="text-lg font-semibold text-slate-900">
-                    Setup the meeting
-                  </p>
-                  <p className="text-zinc-500">
-                    Join the google meeting using the link
-                    https://meet.google.com/okr-1jklk
-                  </p>
-                  <div className="flex justify-end">
-                    <Icon
-                      icon="mi:options-horizontal"
-                      className="cursor-pointer text-xl"
-                    />
-                  </div>
-                </div>
-              </div>
+                );
+              })}
             </div>
           ) : (
-            <div className="flex w-full items-center justify-between rounded-xl bg-stone-200 px-8 py-6 pl-8">
-              <div className="flex items-center gap-4">
-                <button className="h-6 w-6 rounded-full border-[1px] border-black bg-white"></button>
-                <div className="flex max-w-xl flex-col">
-                  <p className="px-8 text-lg font-semibold text-slate-900">
-                    Setup the meeting
-                  </p>
-                  <p className="px-8 font-semibold text-zinc-500 ">
-                    Join the google meeting using the link
-                    https://meet.google.com/okr-1jklk
-                  </p>
-                </div>
-              </div>
-              <Icon
-                icon="mi:options-horizontal"
-                className="cursor-pointer text-xl"
-              />
+            <div className="flex flex-col gap-4">
+              {state.map((task) => {
+                return (
+                  <div
+                    className={`flex w-full items-center justify-between rounded-xl px-8 py-6 pl-8 ${
+                      task.is_completed ? "bg-stone-100" : "bg-stone-200"
+                    }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <button
+                        onClick={() => {
+                          dispatch({
+                            type: "update_task",
+                            taskId: task.id,
+                            is_completed: task.is_completed ? false : true,
+                          });
+                          updateTaskCompletion(
+                            task,
+                            task.is_completed ? false : true
+                          );
+                        }}
+                        className="flex h-6 w-6 items-center justify-center rounded-full border-[1px] border-black bg-white"
+                      >
+                        <Icon
+                          icon="charm:circle-tick"
+                          className={`${task.is_completed ? "" : "hidden"}`}
+                        />
+                      </button>
+                      <div className="flex max-w-xl flex-col">
+                        <p
+                          className={`px-8 text-lg font-semibold text-slate-900 ${
+                            task.is_completed ? "line-through" : ""
+                          }`}
+                        >
+                          {task.title}
+                        </p>
+                        <p
+                          className={`px-8 font-semibold text-zinc-500 ${
+                            task.is_completed ? "line-through" : ""
+                          }`}
+                        >
+                          {task.description}
+                        </p>
+                      </div>
+                    </div>
+                    <Icon
+                      icon="mi:options-horizontal"
+                      className="cursor-pointer text-xl"
+                    />
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

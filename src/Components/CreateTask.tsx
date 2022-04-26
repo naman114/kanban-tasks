@@ -62,6 +62,7 @@ export default function CreateTask(props: {
       title: task.title,
       description: task.description,
       board: props.boardId,
+      is_completed: false,
     };
     const validationErrors = validateTask(payload);
     setErrors(validationErrors);

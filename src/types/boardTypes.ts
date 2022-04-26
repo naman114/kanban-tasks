@@ -33,6 +33,7 @@ export type TaskGet = {
   created_date: string;
   modified_date: string;
   board: number;
+  is_completed: boolean;
 };
 
 export type TaskGroupByStatus = {
@@ -45,6 +46,7 @@ export type TaskCreate = {
   title: string;
   description: string;
   board: number;
+  is_completed: boolean;
 };
 
 export type TaskUpdate = {
@@ -53,6 +55,7 @@ export type TaskUpdate = {
   newStatusId: number;
   title: string;
   description: string;
+  is_completed: boolean;
 };
 
 export const validateTask = (task: TaskCreate) => {
