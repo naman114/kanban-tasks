@@ -88,7 +88,7 @@ export default function Boards() {
     dispatch({ type: "delete_board", id });
     setCount(count - 1);
     await deleteBoard(id);
-    showNotification("success", "Form deleted successfully");
+    showNotification("success", "Board deleted successfully");
   };
 
   return loading ? (
@@ -100,7 +100,7 @@ export default function Boards() {
         <div className="m-10">
           <h1 className="text-5xl font-medium text-slate-900">My Boards</h1>
           <div className="my-6 flex justify-between">
-            <button className="group relative flex items-center justify-center gap-2 rounded border-2 border-zinc-500 py-2 px-4 text-sm text-gray-500 hover:bg-slate-200 focus:outline-none">
+            <button className="group invisible relative flex items-center justify-center gap-2 rounded border-2 border-zinc-500 py-2 px-4 text-sm text-gray-500 hover:bg-slate-200 focus:outline-none">
               <p>Filter</p>
               <Icon icon="akar-icons:chevron-down" />
             </button>
