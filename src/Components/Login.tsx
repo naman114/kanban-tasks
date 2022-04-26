@@ -1,4 +1,4 @@
-import { navigate } from "raviger";
+import { Link, navigate } from "raviger";
 import React, { useContext, useEffect, useState } from "react";
 import { login } from "../utils/apiUtils";
 import { userContext } from "../utils/userUtils";
@@ -71,7 +71,7 @@ export default function Login() {
           </button>
         </form>
         <div>
-          <a href="/register/">New here? Register</a>
+          <Link href="/register/">New here? Register</Link>
         </div>
       </div>
     </div>

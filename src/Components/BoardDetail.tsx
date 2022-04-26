@@ -108,24 +108,6 @@ export default function BoardDetail(props: { boardId: number }) {
     fetchStatusAndTasks();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // const handleBoardUpdate = (id: number, data: BoardCreate) => {
-  //   const { title, description } = data;
-  //   // dispatch({ type: "update_board", id, field: "title", value: title });
-  //   // dispatch({
-  //   //   type: "update_board",
-  //   //   id,
-  //   //   field: "description",
-  //   //   value: description,
-  //   // });
-  // };
-
-  // const handleBoardDelete = async (id: number) => {
-  //   // dispatch({ type: "delete_board", id });
-  //   // setCount(count - 1);
-  //   await deleteBoard(id);
-  //   showNotification("success", "Form deleted successfully");
-  // };
-
   const handleAddStatus = (createdStatus: StatusGet) => {
     dispatch({
       type: "add_new_status",
@@ -211,21 +193,6 @@ export default function BoardDetail(props: { boardId: number }) {
               </button>
             </div>
           </div>
-
-          {/* <div className="w-96 gap-4 overflow-auto">
-            {state.map((board) => {
-              return (
-                <BoardListItem
-                  board={board}
-                  setBoardToUpdateCB={(boardToUpdate: BoardUpdate) =>
-                    setBoardToUpdate(boardToUpdate)
-                  }
-                  openUpdateModalCB={() => setIsUpdateModalOpen(true)}
-                  handleDeleteBoardCB={handleBoardDelete}
-                />
-              );
-            })}
-          </div> */}
           <div className="mt-4 flex flex-grow space-x-6 overflow-auto">
             {state.tasksGroups.map((taskGroup) => {
               return (

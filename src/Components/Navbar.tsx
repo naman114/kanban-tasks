@@ -4,7 +4,6 @@ import { userContext } from "../utils/userUtils";
 
 export default function Navbar() {
   const currentUser = useContext(userContext);
-  console.log(currentUser.name);
 
   return (
     <div className="flex h-20 justify-between border-b-2 px-4 py-5">

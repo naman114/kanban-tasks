@@ -15,6 +15,7 @@ const getCurrentUser = async (setCurrentUser: (currentUser: User) => void) => {
     url,
     status: username === "" ? "NOT_AUTHENTICATED" : "AUTHENTICATED",
   };
+  console.log({ user });
   setCurrentUser(user);
 };
 

@@ -1,11 +1,4 @@
-import { ValueOf } from "raviger/dist/types";
-import {
-  TaskGet,
-  BoardDetailState,
-  StatusGet,
-  TaskGroupByStatus,
-  TaskCreate,
-} from "./boardTypes";
+import { TaskGet, StatusGet, TaskGroupByStatus } from "./boardTypes";
 
 export type PopulateBoardDetail = {
   type: "populate_board_detail";
